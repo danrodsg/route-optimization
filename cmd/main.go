@@ -1,33 +1,20 @@
-
 package main
 
 import (
-	"fmt"
-	"github.com/danrodsg/route-optimization/optimizer"
+    "log"
+   
+    "github.com/danrodsg/route-optimization/api"
+    "github.com/gin-gonic/gin"
 )
 
 func main() {
-	
-	deposito := optimizer.Point{ID: "DEPOT", Latitude: -23.5505, Longitude: -46.6333} // São Paulo
+    
+    router := gin.Default()
 
-	campos := []optimizer.Point{
-		{ID: "CAMPO_A", Latitude: -23.54, Longitude: -46.65},
-		{ID: "CAMPO_B", Latitude: -23.60, Longitude: -46.70},
-		{ID: "CAMPO_C", Latitude: -23.50, Longitude: -46.60},
-		{ID: "CAMPO_D", Latitude: -23.58, Longitude: -46.68},
-	}
+    router.POST("/api/v1/optimize", api.OptimizeRouteHandler)
 
-	opt := optimizer.NearestNeighborOptimizer{
-		Calculator: optimizer.EuclideanDistance{},
-	}
-
-
-	rotaOtimizada := opt.Optimize(deposito, campos)
-
-	
-	fmt.Println("--- Rota Otimizada ---")
-	for i, p := range rotaOtimizada {
-		fmt.Printf("%d. %s (Lat: %.4f, Lon: %.4f)\n", i+1, p.ID, p.Latitude, p.Longitude)
-	}
-	
+    log.Println("Servidor de Otimização de Rotas rodando na porta 8080...")
+    if err := router.Run(":8080"); err != nil {
+        log.Fatalf("Erro ao iniciar o servidor: %v", err)
+    }
 }
